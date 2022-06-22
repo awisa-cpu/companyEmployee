@@ -6,7 +6,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Manager {
+public class Manager implements Employee{
 
     private String lastName;
     private String firstName;
@@ -47,4 +47,6 @@ public class Manager {
     public String toString() {
         return String.format("%s %s %s",lastName, firstName, moneyFormat.format(getSalary()));
     }
+
+
 }
