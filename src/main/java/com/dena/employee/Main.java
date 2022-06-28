@@ -1,10 +1,12 @@
 package com.dena.employee;
 
-import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.time.LocalDate;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+/*
+Program is meant to Calculate each employee salary
+Sums up all the salaries and determine total salary paid by the company.
+ */
 public class Main {
     public static void main(String[] args) {
         String peopleText = """
@@ -23,32 +25,26 @@ public class Main {
                 Flinstone3, Wilma3, 3/3/1910, Analyst, {projectCount=5}
                 Flinstone4, Wilma4, 3/3/1910, Analyst, {projectCount=6}
                 Flinstone5, Wilma5, 3/3/1910, Analyst, {projectCount=9}
+                Mike, Gabriel, 4/4/2001, Tester, {loct=200,tW=50}
+                Jude, Tom, 5/5/1998, Tester, {loct=400,tW=30}
                 Rubble, Betty, 4/4/1925, CEO, {avgStockPrice=300}
                 Awisa, Destiny, 4/4/1925, CEO, {avgStockPrice=300}
                  """;
-//        String peopleRegex = "(?<firstName>\\w+),\\s*(?<lastName>\\w+),\\s*(?<dob>\\d{1,2}/\\d{1,2}/\\d{4}),\\s*(?<role>\\w+)(?:,\\s*\\{(?<details>.*)\\})?\\n";
-        String peopleRegex = "(?<firstName>\\w+),\\s*(?<lastName>\\w+),\\s*(?<dob>\\d{1,2}/\\d{1,2}/\\d{4}),\\s*(?<role>\\w+),\\s*\\{(?<details>.*)\\}\\n";
-        Pattern peoplePat = Pattern.compile(peopleRegex);
-        Matcher peopleMat = peoplePat.matcher(peopleText);
-
+        Matcher peopleMat = Employee.PEOPLE_PAT.matcher(peopleText);
 
         int totalSalaries = 0;
         Employee employee = null;
 
-        while (peopleMat.find()) {
-            employee = switch(peopleMat.group("role")){
-                case "Programmer" -> new Programmer(peopleMat.group());
-                case "Manager" -> new Manager(peopleMat.group());
-                case "Analyst" -> new Analyst(peopleMat.group());
-                case "CEO" -> new CEO(peopleMat.group());
-                default -> new NoEmployee();
-            };
 
-        System.out.println(employee.toString());
-        totalSalaries += employee.getSalary();
+        while (peopleMat.find()) {
+
+            employee = Employee.createEmployee(peopleMat.group());//created a factory method in the Employee superclass, so it just returns the individual employee
+            System.out.println(employee.toString());
+            totalSalaries += employee.getSalary();
 
         }
         NumberFormat currencyInstance = NumberFormat.getCurrencyInstance();
         System.out.printf("The total Salary Payout should be %s%n", currencyInstance.format(totalSalaries));
+
     }
 }
